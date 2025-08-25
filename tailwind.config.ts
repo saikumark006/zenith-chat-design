@@ -26,11 +26,22 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
+					foreground: 'hsl(var(--secondary-foreground))',
+					glow: 'hsl(var(--secondary-glow))'
+				},
+				accent: {
+					DEFAULT: 'hsl(var(--accent))',
+					foreground: 'hsl(var(--accent-foreground))',
+					glow: 'hsl(var(--accent-glow))'
+				},
+				neural: {
+					DEFAULT: 'hsl(var(--neural))',
+					glow: 'hsl(var(--neural-glow))'
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -40,10 +51,6 @@ export default {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
 				},
-				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
-				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
 					foreground: 'hsl(var(--popover-foreground))'
@@ -51,17 +58,22 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
-				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			backgroundImage: {
+				'gradient-neural': 'var(--gradient-neural)',
+				'gradient-hologram': 'var(--gradient-hologram)',
+				'gradient-ai-bg': 'var(--gradient-ai-bg)',
+				'gradient-message': 'var(--gradient-message)'
+			},
+			boxShadow: {
+				'neural': 'var(--shadow-neural)',
+				'glow': 'var(--shadow-glow)',
+				'hologram': 'var(--shadow-hologram)'
+			},
+			transitionTimingFunction: {
+				'ai': 'var(--transition-ai)',
+				'glow': 'var(--transition-glow)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -70,25 +82,58 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'neural-float': {
+					'0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+					'50%': { transform: 'translateY(-10px) rotate(1deg)' }
+				},
+				'hologram-shift': {
+					'0%': { backgroundPosition: '0% 50%' },
+					'50%': { backgroundPosition: '100% 50%' },
+					'100%': { backgroundPosition: '0% 50%' }
+				},
+				'hologram-scan': {
+					'0%': { transform: 'translateX(-100%)' },
+					'100%': { transform: 'translateX(100%)' }
+				},
+				'ai-pulse': {
+					'0%, 100%': { opacity: '1', transform: 'scaleY(1)' },
+					'50%': { opacity: '0.7', transform: 'scaleY(1.05)' }
+				},
+				'typing-bounce': {
+					'0%, 80%, 100%': { transform: 'scale(0.8) translateY(0)', opacity: '0.5' },
+					'40%': { transform: 'scale(1) translateY(-8px)', opacity: '1' }
+				},
+				'matrix-rain': {
+					'0%': { transform: 'translateY(-100vh)', opacity: '1' },
+					'100%': { transform: 'translateY(100vh)', opacity: '0' }
+				},
+				'circuit-flow': {
+					'0%': { strokeDashoffset: '100%' },
+					'100%': { strokeDashoffset: '0%' }
+				},
+				'data-stream': {
+					'0%': { transform: 'translateX(-100%)' },
+					'100%': { transform: 'translateX(100%)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'neural-float': 'neural-float 20s ease-in-out infinite',
+				'hologram-shift': 'hologram-shift 4s ease-in-out infinite',
+				'hologram-scan': 'hologram-scan 3s linear infinite',
+				'ai-pulse': 'ai-pulse 2s ease-in-out infinite',
+				'typing-bounce': 'typing-bounce 1.4s ease-in-out infinite both',
+				'matrix-rain': 'matrix-rain 2s linear infinite',
+				'circuit-flow': 'circuit-flow 2s ease-in-out infinite',
+				'data-stream': 'data-stream 3s linear infinite'
 			}
 		}
 	},

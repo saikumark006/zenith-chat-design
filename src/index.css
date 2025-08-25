@@ -2,95 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* AI-Personified Design System - Neural networks, holograms, electric energy */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* AI Core Colors - Electric blues and neural network vibes */
+    --background: 220 27% 4%;
+    --foreground: 190 100% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 25% 6%;
+    --card-foreground: 190 100% 92%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 220 25% 8%;
+    --popover-foreground: 190 100% 95%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 192 100% 50%;
+    --primary-foreground: 220 27% 4%;
+    --primary-glow: 192 100% 70%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 260 60% 45%;
+    --secondary-foreground: 190 100% 95%;
+    --secondary-glow: 260 80% 65%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 300 70% 50%;
+    --accent-foreground: 190 100% 95%;
+    --accent-glow: 300 80% 70%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --neural: 170 100% 40%;
+    --neural-glow: 170 100% 60%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --muted: 220 20% 12%;
+    --muted-foreground: 190 50% 70%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --destructive: 0 84% 55%;
+    --destructive-foreground: 190 100% 95%;
 
-    --radius: 0.5rem;
+    --border: 220 20% 15%;
+    --input: 220 20% 10%;
+    --ring: 192 100% 50%;
 
-    --sidebar-background: 0 0% 98%;
+    --radius: 0.75rem;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* AI-specific design tokens */
+    --gradient-neural: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--neural)));
+    --gradient-hologram: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)));
+    --gradient-ai-bg: radial-gradient(ellipse at center, hsl(var(--primary) / 0.1), transparent 70%);
+    --gradient-message: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--secondary) / 0.05));
+    
+    --shadow-neural: 0 0 20px hsl(var(--primary) / 0.3);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
+    --shadow-hologram: 0 0 60px hsl(var(--accent-glow) / 0.3);
 
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --transition-ai: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Dark mode uses the same AI theme - it's already dark and futuristic */
   }
 }
 
@@ -101,5 +69,166 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background: var(--gradient-ai-bg), hsl(var(--background));
+  }
+}
+
+@layer components {
+  /* AI Neural Network Background Pattern */
+  .neural-bg {
+    @apply relative overflow-hidden;
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
+  }
+
+  .neural-bg::before {
+    content: '';
+    @apply absolute inset-0 opacity-20;
+    background-image: 
+      radial-gradient(circle at 20% 50%, hsl(var(--primary)) 2px, transparent 2px),
+      radial-gradient(circle at 80% 50%, hsl(var(--neural)) 1px, transparent 1px),
+      radial-gradient(circle at 40% 20%, hsl(var(--accent)) 1px, transparent 1px);
+    background-size: 100px 100px, 60px 60px, 80px 80px;
+    animation: neural-float 20s ease-in-out infinite;
+  }
+
+  /* Holographic Effects */
+  .hologram {
+    @apply relative;
+    background: var(--gradient-hologram);
+    background-size: 400% 400%;
+    animation: hologram-shift 4s ease-in-out infinite;
+  }
+
+  .hologram::after {
+    content: '';
+    @apply absolute inset-0 opacity-30;
+    background: linear-gradient(45deg, transparent 30%, hsl(var(--primary)) 50%, transparent 70%);
+    animation: hologram-scan 3s linear infinite;
+  }
+
+  /* AI Glow Effects */
+  .ai-glow {
+    box-shadow: var(--shadow-neural);
+    transition: var(--transition-glow);
+  }
+
+  .ai-glow:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+  }
+
+  /* AI Button Variants */
+  .ai-neural-btn {
+    @apply relative overflow-hidden;
+    background: var(--gradient-neural);
+    border: 1px solid hsl(var(--primary) / 0.3);
+    box-shadow: var(--shadow-neural);
+    transition: var(--transition-ai);
+  }
+
+  .ai-neural-btn:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-1px);
+  }
+
+  .ai-neural-btn::before {
+    content: '';
+    @apply absolute inset-0 opacity-0;
+    background: linear-gradient(45deg, transparent 30%, hsl(var(--primary-glow)) 50%, transparent 70%);
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-neural-btn:hover::before {
+    @apply opacity-30;
+    animation: hologram-scan 1s ease-in-out;
+  }
+
+  .ai-hologram-btn {
+    @apply relative;
+    background: var(--gradient-hologram);
+    background-size: 400% 400%;
+    animation: hologram-shift 4s ease-in-out infinite;
+    border: 1px solid hsl(var(--accent) / 0.3);
+  }
+
+  .ai-pulse-btn {
+    @apply relative;
+    background: hsl(var(--secondary));
+    border: 1px solid hsl(var(--secondary-glow) / 0.5);
+    box-shadow: 0 0 20px hsl(var(--secondary-glow) / 0.3);
+    animation: ai-pulse 2s ease-in-out infinite;
+  }
+
+  /* Message Bubbles */
+  .message-ai {
+    @apply relative overflow-hidden;
+    background: var(--gradient-message);
+    border: 1px solid hsl(var(--primary) / 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .message-ai::before {
+    content: '';
+    @apply absolute left-0 top-0 w-1 h-full;
+    background: var(--gradient-neural);
+    animation: ai-pulse 2s ease-in-out infinite;
+  }
+
+  /* Typing Indicator */
+  .typing-dots {
+    @apply flex space-x-1;
+  }
+
+  .typing-dot {
+    @apply w-2 h-2 rounded-full;
+    background: hsl(var(--primary));
+    animation: typing-bounce 1.4s ease-in-out infinite both;
+  }
+
+  .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+  .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+}
+
+@layer utilities {
+  /* Custom animations for AI feel */
+  @keyframes neural-float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(1deg); }
+  }
+
+  @keyframes hologram-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes hologram-scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes ai-pulse {
+    0%, 100% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.7; transform: scaleY(1.05); }
+  }
+
+  @keyframes typing-bounce {
+    0%, 80%, 100% { transform: scale(0.8) translateY(0); opacity: 0.5; }
+    40% { transform: scale(1) translateY(-8px); opacity: 1; }
+  }
+
+  @keyframes matrix-rain {
+    0% { transform: translateY(-100vh); opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+
+  @keyframes circuit-flow {
+    0% { stroke-dashoffset: 100%; }
+    100% { stroke-dashoffset: 0%; }
+  }
+
+  @keyframes data-stream {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
 }
