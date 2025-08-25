@@ -6,55 +6,55 @@
 
 @layer base {
   :root {
-    /* AI Core Colors - Electric blues and neural network vibes */
-    --background: 220 27% 4%;
-    --foreground: 190 100% 95%;
+    /* Clean Black & Grey AI Chatbot Theme */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 220 25% 6%;
-    --card-foreground: 190 100% 92%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 90%;
 
-    --popover: 220 25% 8%;
-    --popover-foreground: 190 100% 95%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 192 100% 50%;
-    --primary-foreground: 220 27% 4%;
-    --primary-glow: 192 100% 70%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --primary-glow: 0 0% 85%;
 
-    --secondary: 260 60% 45%;
-    --secondary-foreground: 190 100% 95%;
-    --secondary-glow: 260 80% 65%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 95%;
+    --secondary-glow: 0 0% 40%;
 
-    --accent: 300 70% 50%;
-    --accent-foreground: 190 100% 95%;
-    --accent-glow: 300 80% 70%;
+    --accent: 0 0% 25%;
+    --accent-foreground: 0 0% 95%;
+    --accent-glow: 0 0% 50%;
 
-    --neural: 170 100% 40%;
-    --neural-glow: 170 100% 60%;
+    --neural: 0 0% 70%;
+    --neural-glow: 0 0% 85%;
 
-    --muted: 220 20% 12%;
-    --muted-foreground: 190 50% 70%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
     --destructive: 0 84% 55%;
-    --destructive-foreground: 190 100% 95%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 220 20% 15%;
-    --input: 220 20% 10%;
-    --ring: 192 100% 50%;
+    --border: 0 0% 20%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 80%;
 
     --radius: 0.75rem;
 
-    /* AI-specific design tokens */
-    --gradient-neural: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--neural)));
+    /* Clean design tokens */
+    --gradient-neural: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
     --gradient-hologram: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)));
-    --gradient-ai-bg: radial-gradient(ellipse at center, hsl(var(--primary) / 0.1), transparent 70%);
-    --gradient-message: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--secondary) / 0.05));
+    --gradient-ai-bg: radial-gradient(ellipse at center, hsl(var(--muted) / 0.3), transparent 70%);
+    --gradient-message: linear-gradient(135deg, hsl(var(--muted) / 0.8), hsl(var(--card)));
     
-    --shadow-neural: 0 0 20px hsl(var(--primary) / 0.3);
-    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
-    --shadow-hologram: 0 0 60px hsl(var(--accent-glow) / 0.3);
+    --shadow-neural: 0 0 20px hsl(var(--primary) / 0.1);
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.2);
+    --shadow-hologram: 0 0 30px hsl(var(--accent) / 0.2);
 
-    --transition-ai: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-glow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-ai: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
@@ -74,36 +74,22 @@
 }
 
 @layer components {
-  /* AI Neural Network Background Pattern */
+  /* Clean AI Background */
   .neural-bg {
-    @apply relative overflow-hidden;
+    @apply relative;
     background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
   }
 
-  .neural-bg::before {
-    content: '';
-    @apply absolute inset-0 opacity-20;
-    background-image: 
-      radial-gradient(circle at 20% 50%, hsl(var(--primary)) 2px, transparent 2px),
-      radial-gradient(circle at 80% 50%, hsl(var(--neural)) 1px, transparent 1px),
-      radial-gradient(circle at 40% 20%, hsl(var(--accent)) 1px, transparent 1px);
-    background-size: 100px 100px, 60px 60px, 80px 80px;
-    animation: neural-float 20s ease-in-out infinite;
-  }
-
-  /* Holographic Effects */
+  /* Simple Clean Effects */
   .hologram {
     @apply relative;
-    background: var(--gradient-hologram);
-    background-size: 400% 400%;
-    animation: hologram-shift 4s ease-in-out infinite;
+    background: var(--gradient-neural);
+    transition: var(--transition-ai);
   }
 
-  .hologram::after {
-    content: '';
-    @apply absolute inset-0 opacity-30;
-    background: linear-gradient(45deg, transparent 30%, hsl(var(--primary)) 50%, transparent 70%);
-    animation: hologram-scan 3s linear infinite;
+  .hologram:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
   }
 
   /* AI Glow Effects */
@@ -117,46 +103,43 @@
     transform: translateY(-2px);
   }
 
-  /* AI Button Variants */
+  /* Clean AI Button Variants */
   .ai-neural-btn {
-    @apply relative overflow-hidden;
-    background: var(--gradient-neural);
-    border: 1px solid hsl(var(--primary) / 0.3);
-    box-shadow: var(--shadow-neural);
+    @apply relative;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border: 1px solid hsl(var(--border));
     transition: var(--transition-ai);
   }
 
   .ai-neural-btn:hover {
-    box-shadow: var(--shadow-glow);
+    background: hsl(var(--primary) / 0.9);
     transform: translateY(-1px);
-  }
-
-  .ai-neural-btn::before {
-    content: '';
-    @apply absolute inset-0 opacity-0;
-    background: linear-gradient(45deg, transparent 30%, hsl(var(--primary-glow)) 50%, transparent 70%);
-    transition: opacity 0.3s ease;
-  }
-
-  .ai-neural-btn:hover::before {
-    @apply opacity-30;
-    animation: hologram-scan 1s ease-in-out;
+    box-shadow: var(--shadow-glow);
   }
 
   .ai-hologram-btn {
     @apply relative;
-    background: var(--gradient-hologram);
-    background-size: 400% 400%;
-    animation: hologram-shift 4s ease-in-out infinite;
-    border: 1px solid hsl(var(--accent) / 0.3);
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--border));
+    transition: var(--transition-ai);
+  }
+
+  .ai-hologram-btn:hover {
+    background: hsl(var(--secondary) / 0.8);
   }
 
   .ai-pulse-btn {
     @apply relative;
-    background: hsl(var(--secondary));
-    border: 1px solid hsl(var(--secondary-glow) / 0.5);
-    box-shadow: 0 0 20px hsl(var(--secondary-glow) / 0.3);
-    animation: ai-pulse 2s ease-in-out infinite;
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    border: 1px solid hsl(var(--border));
+    transition: var(--transition-ai);
+  }
+
+  .ai-pulse-btn:hover {
+    background: hsl(var(--muted) / 0.8);
   }
 
   /* Message Bubbles */

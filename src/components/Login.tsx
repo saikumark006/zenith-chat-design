@@ -35,11 +35,11 @@ const Login = () => {
           <div className="mx-auto w-16 h-16 bg-gradient-neural rounded-full flex items-center justify-center hologram">
             <Brain className="w-8 h-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl font-bold bg-gradient-neural bg-clip-text text-transparent">
-            AI Neural Interface
+          <CardTitle className="text-2xl font-bold text-foreground">
+            AI Chatbot Login
           </CardTitle>
           <p className="text-muted-foreground text-sm">
-            Connect to the neural network and unlock AI consciousness
+            Sign in to start chatting with your AI assistant
           </p>
         </CardHeader>
 
@@ -48,13 +48,13 @@ const Login = () => {
             <div className="space-y-2">
               <label htmlFor="username" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <User className="w-4 h-4 text-primary" />
-                Neural ID
+                Username
               </label>
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter your neural identifier"
-                className="bg-input/50 border-primary/20 focus:border-primary focus:ring-primary/20 ai-glow"
+                placeholder="Enter your username"
+                className="bg-input border-border focus:border-primary focus:ring-primary/20"
                 required
               />
             </div>
@@ -62,14 +62,14 @@ const Login = () => {
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <Lock className="w-4 h-4 text-primary" />
-                Access Key
+                Password
               </label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your access key"
-                  className="bg-input/50 border-primary/20 focus:border-primary focus:ring-primary/20 pr-10 ai-glow"
+                  placeholder="Enter your password"
+                  className="bg-input border-border focus:border-primary focus:ring-primary/20 pr-10"
                   required
                 />
                 <button
@@ -94,12 +94,12 @@ const Login = () => {
                     <div className="typing-dot" />
                     <div className="typing-dot" />
                   </div>
-                  <span>Connecting to Neural Network...</span>
+                  <span>Signing in...</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Zap className="w-4 h-4 group-hover:animate-ai-pulse" />
-                  <span>Initialize Connection</span>
+                  <span>Sign In</span>
                 </div>
               )}
             </Button>
@@ -107,7 +107,7 @@ const Login = () => {
 
           <div className="text-center">
             <p className="text-xs text-muted-foreground">
-              Powered by Advanced Neural Networks
+              Powered by Advanced AI Technology
             </p>
             <div className="flex justify-center items-center gap-1 mt-2">
               <div className="w-1 h-1 bg-primary rounded-full animate-ai-pulse" />

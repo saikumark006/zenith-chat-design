@@ -26,7 +26,7 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Neural connection established. I am your AI assistant, ready to help you navigate the digital consciousness. How may I assist you today?",
+      content: "Hello! I'm your AI assistant. I'm here to help answer your questions and have conversations with you. How can I assist you today?",
       isAI: true,
       timestamp: new Date()
     }
@@ -62,10 +62,10 @@ const Chat = () => {
     // Simulate AI response
     setTimeout(() => {
       const aiResponses = [
-        "I understand your query. Let me process this through my neural networks and provide you with a comprehensive analysis.",
-        "Fascinating input! My artificial intelligence algorithms are analyzing multiple data patterns to generate the optimal response.",
-        "Neural processing complete. Based on my artificial consciousness, here's my interpretation of your request.",
-        "Data streams analyzed. My AI consciousness has computed several pathways to address your inquiry effectively."
+        "I understand your question. Let me think about this and provide you with a helpful response.",
+        "That's an interesting point! I'm processing your request to give you the best possible answer.",
+        "Thanks for your message. Based on what you've asked, here's my response to help you.",
+        "I've analyzed your question and I'm ready to assist you with a comprehensive answer."
       ];
 
       const aiMessage: Message = {
@@ -97,8 +97,8 @@ const Chat = () => {
               <Brain className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="font-semibold text-foreground">AI Neural Chat</h2>
-              <p className="text-xs text-muted-foreground">v2.1.47</p>
+              <h2 className="font-semibold text-foreground">AI Chatbot</h2>
+              <p className="text-xs text-muted-foreground">v1.0</p>
             </div>
           </div>
         </div>
@@ -146,8 +146,8 @@ const Chat = () => {
               <Cpu className="w-4 h-4 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-semibold text-foreground">AI Neural Assistant</h1>
-              <p className="text-xs text-muted-foreground">Connected to neural network</p>
+              <h1 className="font-semibold text-foreground">AI Assistant</h1>
+              <p className="text-xs text-muted-foreground">Online and ready to help</p>
             </div>
           </div>
           
@@ -221,7 +221,7 @@ const Chat = () => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Enter your message to the AI neural network..."
+                placeholder="Type your message here..."
                 className="pr-12 bg-input/50 border-primary/20 focus:border-primary focus:ring-primary/20 ai-glow"
               />
               <Button
