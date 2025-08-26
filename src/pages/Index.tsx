@@ -16,22 +16,22 @@ const Index = () => {
         {/* Hero Section */}
         <div className="space-y-6">
           <h1 className="text-5xl font-bold text-foreground">
-            AI Chatbot
+            AI Space
           </h1>
           <p className="text-xl text-muted-foreground">
-            Chat with an intelligent AI assistant that understands and responds to your questions.
+            Create, customize, and manage your intelligent AI agents all in one place
           </p>
         </div>
 
         {/* Call to Action */}
         <div className="space-y-4 mt-12">
           <Button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/agents')}
             variant="ai-neural"
             size="lg"
             className="text-lg px-8 py-4"
           >
-            Start Chatting
+            Access AI Space
             <ArrowRight className="w-5 h-5" />
           </Button>
           

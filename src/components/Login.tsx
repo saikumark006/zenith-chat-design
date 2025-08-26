@@ -16,7 +16,7 @@ const Login = () => {
     
     // Simulate AI authentication process
     setTimeout(() => {
-      navigate('/chat');
+      navigate('/agents');
     }, 2000);
   };
 
