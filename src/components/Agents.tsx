@@ -51,8 +51,8 @@ const Agents = () => {
     }
   ];
 
-  const handleAgentClick = (agent: any) => {
-    navigate('/login', { state: { agent } });
+  const handleAgentClick = () => {
+    navigate('/login');
   };
 
   return (
@@ -98,7 +98,7 @@ const Agents = () => {
         {agents.map((agent) => {
           const IconComponent = agent.icon;
           return (
-            <Card key={agent.id} className="hover:shadow-lg transition-shadow cursor-pointer group" onClick={() => handleAgentClick(agent)}>
+            <Card key={agent.id} className="hover:shadow-lg transition-shadow cursor-pointer group" onClick={handleAgentClick}>
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
@@ -109,12 +109,7 @@ const Agents = () => {
                       <CardTitle className="text-lg">{agent.name}</CardTitle>
                     </div>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
                     <MoreHorizontal className="w-4 h-4" />
                   </Button>
                 </div>
@@ -158,12 +153,7 @@ const Agents = () => {
                   <Badge variant={agent.status === "Active" ? "default" : "secondary"}>
                     {agent.status}
                   </Badge>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-xs gap-1 group-hover:text-primary"
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <Button variant="ghost" size="sm" className="text-xs gap-1 group-hover:text-primary">
                     View Details <ArrowRight className="w-3 h-3" />
                   </Button>
                 </div>
