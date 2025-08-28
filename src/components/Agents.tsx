@@ -109,7 +109,12 @@ const Agents = () => {
                       <CardTitle className="text-lg">{agent.name}</CardTitle>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <MoreHorizontal className="w-4 h-4" />
                   </Button>
                 </div>
@@ -153,7 +158,12 @@ const Agents = () => {
                   <Badge variant={agent.status === "Active" ? "default" : "secondary"}>
                     {agent.status}
                   </Badge>
-                  <Button variant="ghost" size="sm" className="text-xs gap-1 group-hover:text-primary">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-xs gap-1 group-hover:text-primary"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     View Details <ArrowRight className="w-3 h-3" />
                   </Button>
                 </div>
