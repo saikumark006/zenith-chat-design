@@ -87,18 +87,6 @@ const Agents = () => {
           </div>
           
           <Button variant="outline" className="gap-2">
-            All Functions <ChevronDown className="w-4 h-4" />
-          </Button>
-          
-          <Button variant="outline" className="gap-2">
-            All Channels <ChevronDown className="w-4 h-4" />
-          </Button>
-          
-          <Button variant="outline" className="gap-2">
-            All Status <ChevronDown className="w-4 h-4" />
-          </Button>
-          
-          <Button variant="outline" className="gap-2">
             Most Recent <ChevronDown className="w-4 h-4" />
           </Button>
         </div>
@@ -106,19 +94,6 @@ const Agents = () => {
 
       {/* Agents Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Create New Agent Card */}
-        <Card className="border-dashed border-2 border-muted-foreground/20 hover:border-primary/50 transition-colors cursor-pointer group">
-          <CardContent className="flex flex-col items-center justify-center p-8 text-center min-h-[300px]">
-            <div className="w-16 h-16 rounded-full border-2 border-dashed border-muted-foreground/40 flex items-center justify-center mb-4 group-hover:border-primary/50 transition-colors">
-              <Plus className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors" />
-            </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">Create New Agent</h3>
-            <p className="text-sm text-muted-foreground">
-              Create a custom AI agent to help with customer support, sales, or other tasks
-            </p>
-          </CardContent>
-        </Card>
-
         {/* Agent Cards */}
         {agents.map((agent) => {
           const IconComponent = agent.icon;
