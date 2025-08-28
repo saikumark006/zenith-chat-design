@@ -51,8 +51,8 @@ const Agents = () => {
     }
   ];
 
-  const handleAgentClick = () => {
-    navigate('/login');
+  const handleAgentClick = (agent: any) => {
+    navigate('/login', { state: { agent } });
   };
 
   return (
@@ -98,7 +98,7 @@ const Agents = () => {
         {agents.map((agent) => {
           const IconComponent = agent.icon;
           return (
-            <Card key={agent.id} className="hover:shadow-lg transition-shadow cursor-pointer group" onClick={handleAgentClick}>
+            <Card key={agent.id} className="hover:shadow-lg transition-shadow cursor-pointer group" onClick={() => handleAgentClick(agent)}>
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">

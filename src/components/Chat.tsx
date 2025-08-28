@@ -15,7 +15,7 @@ import {
   User,
   ArrowLeft
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface Message {
   id: string;
@@ -26,6 +26,8 @@ interface Message {
 
 const Chat = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const agent = location.state?.agent;
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -96,11 +98,11 @@ const Chat = () => {
       <div className="w-64 bg-card/80 backdrop-blur-xl border-r border-primary/20 flex flex-col">
         <div className="p-4 border-b border-primary/20">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-neural rounded-full flex items-center justify-center hologram">
-              <Brain className="w-5 h-5 text-primary-foreground" />
+            <div className={`w-8 h-8 ${agent?.color || 'bg-gradient-neural'} rounded-full flex items-center justify-center hologram`}>
+              {agent?.icon ? <agent.icon className="w-5 h-5 text-white" /> : <Brain className="w-5 h-5 text-primary-foreground" />}
             </div>
             <div>
-              <h2 className="font-semibold text-foreground">AI Chatbot</h2>
+              <h2 className="font-semibold text-foreground">{agent?.name || 'AI Chatbot'}</h2>
               <p className="text-xs text-muted-foreground">v1.0</p>
             </div>
           </div>
@@ -128,22 +130,22 @@ const Chat = () => {
           
           <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10">
             <Settings className="w-4 h-4" />
-            Neural Settings
+            Settings
           </Button>
         </div>
 
         <div className="p-4 border-t border-primary/20">
           <div className="text-xs text-muted-foreground space-y-1">
             <div className="flex justify-between">
-              <span>Status:</span>
+              <span>Response Time:</span>
               <span className="text-primary flex items-center gap-1">
                 <div className="w-1.5 h-1.5 bg-primary rounded-full animate-ai-pulse" />
-                Active
+                Fast
               </span>
             </div>
             <div className="flex justify-between">
-              <span>Neural Load:</span>
-              <span className="text-neural">47%</span>
+              <span>Accuracy:</span>
+              <span className="text-neural">{agent?.avm || '9.2'}/10</span>
             </div>
           </div>
         </div>
@@ -154,11 +156,11 @@ const Chat = () => {
         {/* Header */}
         <div className="h-16 border-b border-primary/20 bg-card/80 backdrop-blur-xl flex items-center justify-between px-6">
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 bg-gradient-neural rounded-full flex items-center justify-center animate-hologram-shift">
-              <Cpu className="w-4 h-4 text-primary-foreground" />
+            <div className={`w-6 h-6 ${agent?.color || 'bg-gradient-neural'} rounded-full flex items-center justify-center animate-hologram-shift`}>
+              {agent?.icon ? <agent.icon className="w-4 h-4 text-white" /> : <Cpu className="w-4 h-4 text-primary-foreground" />}
             </div>
             <div>
-              <h1 className="font-semibold text-foreground">AI Assistant</h1>
+              <h1 className="font-semibold text-foreground">{agent?.name || 'AI Assistant'}</h1>
               <p className="text-xs text-muted-foreground">Online and ready to help</p>
             </div>
           </div>
@@ -181,8 +183,8 @@ const Chat = () => {
                 className={`flex gap-4 ${message.isAI ? 'justify-start' : 'justify-end'}`}
               >
                 {message.isAI && (
-                  <div className="w-8 h-8 bg-gradient-neural rounded-full flex items-center justify-center hologram flex-shrink-0">
-                    <Brain className="w-4 h-4 text-primary-foreground" />
+                  <div className={`w-8 h-8 ${agent?.color || 'bg-gradient-neural'} rounded-full flex items-center justify-center hologram flex-shrink-0`}>
+                    {agent?.icon ? <agent.icon className="w-4 h-4 text-white" /> : <Brain className="w-4 h-4 text-primary-foreground" />}
                   </div>
                 )}
                 
@@ -207,8 +209,8 @@ const Chat = () => {
 
             {isTyping && (
               <div className="flex gap-4 justify-start">
-                <div className="w-8 h-8 bg-gradient-neural rounded-full flex items-center justify-center hologram flex-shrink-0">
-                  <Brain className="w-4 h-4 text-primary-foreground" />
+                <div className={`w-8 h-8 ${agent?.color || 'bg-gradient-neural'} rounded-full flex items-center justify-center hologram flex-shrink-0`}>
+                  {agent?.icon ? <agent.icon className="w-4 h-4 text-white" /> : <Brain className="w-4 h-4 text-primary-foreground" />}
                 </div>
                 <Card className="message-ai bg-gradient-message p-4">
                   <div className="flex items-center gap-2">

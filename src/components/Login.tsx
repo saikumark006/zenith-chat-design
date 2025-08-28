@@ -3,12 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, Lock, User, Zap, Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const agent = location.state?.agent;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +18,7 @@ const Login = () => {
     
     // Simulate AI authentication process
     setTimeout(() => {
-      navigate('/chat');
+      navigate('/chat', { state: { agent } });
     }, 2000);
   };
 
@@ -42,14 +44,14 @@ const Login = () => {
 
       <Card className="w-full max-w-md bg-card/80 backdrop-blur-xl border-primary/20 ai-glow">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 bg-gradient-neural rounded-full flex items-center justify-center hologram">
-            <Brain className="w-8 h-8 text-primary-foreground" />
+          <div className={`mx-auto w-16 h-16 ${agent?.color || 'bg-gradient-neural'} rounded-full flex items-center justify-center hologram`}>
+            {agent?.icon ? <agent.icon className="w-8 h-8 text-white" /> : <Brain className="w-8 h-8 text-primary-foreground" />}
           </div>
           <CardTitle className="text-2xl font-bold text-foreground">
-            AI Chatbot Login
+            {agent?.name || 'AI Chatbot'} Login
           </CardTitle>
           <p className="text-muted-foreground text-sm">
-            Sign in to start chatting with your AI assistant
+            Sign in to start chatting with {agent?.name || 'your AI assistant'}
           </p>
         </CardHeader>
 
