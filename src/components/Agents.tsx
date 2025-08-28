@@ -13,7 +13,8 @@ import {
   ArrowRight,
   Phone,
   MessageSquare,
-  Mail
+  Mail,
+  ArrowLeft
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -59,9 +60,14 @@ const Agents = () => {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Your AI Agents</h1>
-            <p className="text-muted-foreground">Create, customize, and manage your intelligent assistants all in one place</p>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Your AI Agents</h1>
+              <p className="text-muted-foreground">Create, customize, and manage your intelligent assistants all in one place</p>
+            </div>
           </div>
           <Button variant="outline" size="icon">
             <ChevronDown className="w-4 h-4" />
@@ -126,7 +132,6 @@ const Agents = () => {
                     </div>
                     <div>
                       <CardTitle className="text-lg">{agent.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground">+1 (555) 197-1097</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">

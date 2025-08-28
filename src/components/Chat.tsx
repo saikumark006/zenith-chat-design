@@ -12,8 +12,10 @@ import {
   Cpu, 
   Sparkles,
   MessageCircle,
-  User
+  User,
+  ArrowLeft
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   id: string;
@@ -23,6 +25,7 @@ interface Message {
 }
 
 const Chat = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -104,6 +107,15 @@ const Chat = () => {
         </div>
 
         <div className="flex-1 p-4 space-y-4">
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10"
+            onClick={() => navigate('/agents')}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Agents
+          </Button>
+
           <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10">
             <MessageCircle className="w-4 h-4" />
             New Conversation

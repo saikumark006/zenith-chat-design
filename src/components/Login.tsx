@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Lock, User, Zap, Eye, EyeOff } from "lucide-react";
+import { Brain, Lock, User, Zap, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -22,6 +22,16 @@ const Login = () => {
 
   return (
     <div className="min-h-screen neural-bg flex items-center justify-center p-4">
+      {/* Back Button */}
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="absolute top-6 left-6 z-10"
+        onClick={() => navigate('/agents')}
+      >
+        <ArrowLeft className="w-4 h-4" />
+      </Button>
+
       {/* Neural Network Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 left-10 w-2 h-2 bg-primary rounded-full animate-ai-pulse" />
