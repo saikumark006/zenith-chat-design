@@ -74,10 +74,48 @@
 }
 
 @layer components {
-  /* Clean AI Background */
+  /* Clean AI Background with Sketchy Pattern */
   .neural-bg {
-    @apply relative;
+    @apply relative overflow-hidden;
     background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
+  }
+
+  .neural-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      /* Sketchy AI circuit lines */
+      linear-gradient(45deg, transparent 47%, hsl(var(--primary) / 0.08) 48%, hsl(var(--primary) / 0.08) 52%, transparent 53%),
+      linear-gradient(-45deg, transparent 47%, hsl(var(--accent) / 0.06) 48%, hsl(var(--accent) / 0.06) 52%, transparent 53%),
+      /* Neural network nodes */
+      radial-gradient(circle at 20% 20%, hsl(var(--neural) / 0.1) 1px, transparent 1px),
+      radial-gradient(circle at 80% 80%, hsl(var(--primary) / 0.08) 1px, transparent 1px),
+      radial-gradient(circle at 40% 60%, hsl(var(--accent) / 0.06) 1px, transparent 1px),
+      /* Sketchy grid pattern */
+      repeating-linear-gradient(90deg, transparent, transparent 120px, hsl(var(--muted-foreground) / 0.02) 121px, hsl(var(--muted-foreground) / 0.02) 123px),
+      repeating-linear-gradient(0deg, transparent, transparent 160px, hsl(var(--muted-foreground) / 0.03) 161px, hsl(var(--muted-foreground) / 0.03) 163px);
+    background-size: 200px 200px, 180px 180px, 100px 100px, 140px 140px, 80px 80px, 200px 200px, 240px 240px;
+    background-position: 0 0, 0 0, 0 0, 50px 50px, 30px 30px, 0 0, 0 0;
+    opacity: 0.4;
+    pointer-events: none;
+    animation: sketch-float 25s ease-in-out infinite;
+  }
+
+  .neural-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      /* Floating AI particles */
+      radial-gradient(circle at 10% 30%, hsl(var(--primary) / 0.05) 2px, transparent 2px),
+      radial-gradient(circle at 90% 70%, hsl(var(--neural) / 0.04) 1px, transparent 1px),
+      radial-gradient(circle at 60% 20%, hsl(var(--accent) / 0.03) 1px, transparent 1px),
+      radial-gradient(circle at 30% 80%, hsl(var(--primary) / 0.06) 1px, transparent 1px);
+    background-size: 300px 300px, 200px 200px, 150px 150px, 250px 250px;
+    background-position: 0 0, 100px 100px, 200px 200px, 150px 50px;
+    pointer-events: none;
+    animation: neural-float 30s ease-in-out infinite reverse;
   }
 
   /* Simple Clean Effects */
@@ -213,5 +251,12 @@
   @keyframes data-stream {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
+  }
+
+  @keyframes sketch-float {
+    0%, 100% { transform: translateX(0px) translateY(0px); }
+    25% { transform: translateX(2px) translateY(-1px); }
+    50% { transform: translateX(-1px) translateY(2px); }
+    75% { transform: translateX(1px) translateY(1px); }
   }
 }
