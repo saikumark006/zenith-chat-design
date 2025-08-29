@@ -309,7 +309,7 @@ const Chat = () => {
 
   /* ---------- UI ---------- */
   return (
-    <div className="min-h-screen neural-bg flex">
+    <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
       <div className="w-64 bg-card/80 backdrop-blur-xl border-r border-primary/20 flex flex-col">
         <div className="p-4 border-b border-primary/20">
