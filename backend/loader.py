@@ -7,13 +7,7 @@ import traceback
 import urllib.parse
 
 # ---------- Snowflake Credentials ----------
-sf_user = "KINGKONG"
-sf_password = "Constant127496"
-sf_account = "LHHLNLP-EPB47564"
-sf_role = "ACCOUNTADMIN"
-sf_warehouse = "COMPUTE_WH"
-sf_database = "HACKATHON"
-sf_schema = "RAW"
+
 
 def create_retry_session(retries=3, backoff_factor=0.5, status_forcelist=(500,502,503,504)):
     session = requests.Session()
