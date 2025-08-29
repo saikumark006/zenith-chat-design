@@ -1,9 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import uvicorn
-import loader  # our Snowflake loader file
+import loader
 
 app = FastAPI()
+
+# ✅ CORS setup
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],   # allow everything during dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ApiInput(BaseModel):
     apis: list[str]
@@ -15,6 +24,3 @@ def run_loader(input: ApiInput):
         return {"message": "✅ Data loading completed", "details": result}
     except Exception as e:
         return {"message": f"❌ Error: {str(e)}"}
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)

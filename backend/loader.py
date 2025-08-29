@@ -1,8 +1,8 @@
 import os, re, pandas as pd, requests
-from requests.adapters import HTTPAdapter
+from requests.adapters import HTTPAdapter  #
+from snowflake.connector.pandas_tools import write_pandas  
 from urllib3.util.retry import Retry
 import snowflake.connector
-from snowflake.connector.pandas_tools import write_pandas
 
 # ---------- Snowflake Credentials ----------
 sf_user = "KINGKONG"
