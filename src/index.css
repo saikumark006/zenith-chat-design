@@ -74,10 +74,12 @@
 }
 
 @layer components {
-  /* Clean AI Background with Sketchy Pattern */
+  /* Immersive AI Brain Background */
   .neural-bg {
     @apply relative overflow-hidden;
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
+    background: 
+      radial-gradient(ellipse at center, hsl(var(--background)) 0%, hsl(var(--card) / 0.8) 100%),
+      linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted) / 0.1) 100%);
   }
 
   .neural-bg::before {
@@ -85,37 +87,44 @@
     position: absolute;
     inset: 0;
     background-image: 
-      /* Sketchy AI circuit lines */
-      linear-gradient(45deg, transparent 47%, hsl(var(--primary) / 0.08) 48%, hsl(var(--primary) / 0.08) 52%, transparent 53%),
-      linear-gradient(-45deg, transparent 47%, hsl(var(--accent) / 0.06) 48%, hsl(var(--accent) / 0.06) 52%, transparent 53%),
-      /* Neural network nodes */
-      radial-gradient(circle at 20% 20%, hsl(var(--neural) / 0.1) 1px, transparent 1px),
-      radial-gradient(circle at 80% 80%, hsl(var(--primary) / 0.08) 1px, transparent 1px),
-      radial-gradient(circle at 40% 60%, hsl(var(--accent) / 0.06) 1px, transparent 1px),
-      /* Sketchy grid pattern */
-      repeating-linear-gradient(90deg, transparent, transparent 120px, hsl(var(--muted-foreground) / 0.02) 121px, hsl(var(--muted-foreground) / 0.02) 123px),
-      repeating-linear-gradient(0deg, transparent, transparent 160px, hsl(var(--muted-foreground) / 0.03) 161px, hsl(var(--muted-foreground) / 0.03) 163px);
-    background-size: 200px 200px, 180px 180px, 100px 100px, 140px 140px, 80px 80px, 200px 200px, 240px 240px;
-    background-position: 0 0, 0 0, 0 0, 50px 50px, 30px 30px, 0 0, 0 0;
-    opacity: 0.4;
+      /* Neural pathways */
+      linear-gradient(45deg, transparent 0%, hsl(var(--primary) / 0.03) 1%, transparent 2%),
+      linear-gradient(-45deg, transparent 0%, hsl(var(--neural) / 0.02) 1%, transparent 2%),
+      linear-gradient(135deg, transparent 0%, hsl(var(--accent) / 0.02) 1%, transparent 2%),
+      /* Synaptic connections */
+      radial-gradient(circle at 15% 25%, hsl(var(--primary) / 0.08) 1px, transparent 2px),
+      radial-gradient(circle at 85% 75%, hsl(var(--neural) / 0.06) 1px, transparent 2px),
+      radial-gradient(circle at 45% 15%, hsl(var(--accent) / 0.05) 1px, transparent 2px),
+      radial-gradient(circle at 65% 85%, hsl(var(--primary) / 0.04) 1px, transparent 2px),
+      radial-gradient(circle at 25% 65%, hsl(var(--neural) / 0.07) 1px, transparent 2px);
+    background-size: 
+      400px 400px, 350px 350px, 450px 450px,
+      200px 200px, 180px 180px, 220px 220px, 160px 160px, 240px 240px;
+    background-position: 
+      0 0, 0 0, 0 0,
+      0 0, 100px 50px, 200px 100px, 50px 150px, 150px 200px;
+    opacity: 0.6;
     pointer-events: none;
-    animation: sketch-float 25s ease-in-out infinite;
+    animation: neural-flow 20s linear infinite;
   }
 
   .neural-bg::after {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: 
-      /* Floating AI particles */
-      radial-gradient(circle at 10% 30%, hsl(var(--primary) / 0.05) 2px, transparent 2px),
-      radial-gradient(circle at 90% 70%, hsl(var(--neural) / 0.04) 1px, transparent 1px),
-      radial-gradient(circle at 60% 20%, hsl(var(--accent) / 0.03) 1px, transparent 1px),
-      radial-gradient(circle at 30% 80%, hsl(var(--primary) / 0.06) 1px, transparent 1px);
-    background-size: 300px 300px, 200px 200px, 150px 150px, 250px 250px;
-    background-position: 0 0, 100px 100px, 200px 200px, 150px 50px;
+    background: 
+      /* Data streams */
+      linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.1) 50%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, hsl(var(--neural) / 0.08) 50%, transparent 100%),
+      /* Neuron clusters */
+      radial-gradient(circle at 30% 40%, hsl(var(--primary) / 0.05) 0%, transparent 20%),
+      radial-gradient(circle at 70% 60%, hsl(var(--accent) / 0.04) 0%, transparent 25%),
+      radial-gradient(circle at 20% 80%, hsl(var(--neural) / 0.06) 0%, transparent 15%);
+    background-size: 100% 2px, 2px 100%, 300px 300px, 250px 250px, 200px 200px;
+    background-position: 0 20%, 30% 0, 0 0, 0 0, 0 0;
+    opacity: 0.3;
     pointer-events: none;
-    animation: neural-float 30s ease-in-out infinite reverse;
+    animation: data-pulse 15s ease-in-out infinite;
   }
 
   /* Simple Clean Effects */
@@ -258,5 +267,42 @@
     25% { transform: translateX(2px) translateY(-1px); }
     50% { transform: translateX(-1px) translateY(2px); }
     75% { transform: translateX(1px) translateY(1px); }
+  }
+
+  @keyframes neural-flow {
+    0% { 
+      background-position: 
+        0 0, 0 0, 0 0,
+        0 0, 100px 50px, 200px 100px, 50px 150px, 150px 200px;
+    }
+    50% { 
+      background-position: 
+        200px 200px, -175px 175px, 225px -225px,
+        100px 100px, 200px 150px, 300px 200px, 150px 250px, 250px 300px;
+    }
+    100% { 
+      background-position: 
+        400px 400px, -350px 350px, 450px -450px,
+        200px 200px, 300px 250px, 400px 300px, 250px 350px, 350px 400px;
+    }
+  }
+
+  @keyframes data-pulse {
+    0%, 100% { 
+      opacity: 0.3;
+      background-size: 100% 2px, 2px 100%, 300px 300px, 250px 250px, 200px 200px;
+    }
+    25% {
+      opacity: 0.5;
+      background-size: 100% 3px, 3px 100%, 350px 350px, 300px 300px, 250px 250px;
+    }
+    50% { 
+      opacity: 0.4;
+      background-size: 100% 2px, 2px 100%, 300px 300px, 250px 250px, 200px 200px;
+    }
+    75% {
+      opacity: 0.6;
+      background-size: 100% 4px, 4px 100%, 400px 400px, 350px 350px, 300px 300px;
+    }
   }
 }

@@ -7,10 +7,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen neural-bg flex flex-col items-center justify-center p-4">
-      <div className="text-center space-y-8 max-w-2xl mx-auto">
+      <div className="text-center space-y-8 max-w-2xl mx-auto relative z-10">
         {/* Main Logo */}
-        <div className="mx-auto w-20 h-20 bg-gradient-neural rounded-full flex items-center justify-center hologram mb-8">
+        <div className="mx-auto w-20 h-20 bg-gradient-neural rounded-full flex items-center justify-center hologram mb-8 relative">
           <MessageCircle className="w-10 h-10 text-primary-foreground" />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-neural/20 animate-pulse"></div>
         </div>
 
         {/* Hero Section */}
