@@ -232,7 +232,7 @@ const Chat = () => {
 
   /* ---------- Mode ---------- */
   const [mode, setMode] = useState<"landing" | "dataflow" | "chat">(
-    isDataFlow ? "landing" : "chat"
+    isDataFlow ? "dataflow" : "chat"
   );
 
   /* ---------- Settings ---------- */
@@ -291,11 +291,11 @@ const Chat = () => {
             variant="ghost"
             className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10"
             onClick={() => {
-              setMode(isDataFlow ? "landing" : "chat");
+              setMode(isDataFlow ? "dataflow" : "chat");
               setMessages([{ id: "welcome-1", content: greeting, isAI: true, timestamp: new Date() }]);
               setInputValue("");
               setIsTyping(false);
-              setApiKeys([""]);
+              setApiKeys([""]); // ensure fresh
             }}
           >
             <MessageCircle className="w-4 h-4" />
@@ -344,23 +344,6 @@ const Chat = () => {
             </div>
           </div>
         </div>
-
-        {/* Landing (ONLY for DataFlow) */}
-        {isDataFlow && mode === "landing" && (
-          <div className="flex-1 flex items-center justify-center p-8">
-            <div className="w-full max-w-md text-center space-y-6">
-              <h2 className="text-2xl font-bold text-foreground">What would you like to do?</h2>
-              <div className="flex flex-col gap-4 mt-6">
-                <Button className="ai-neural-btn" onClick={() => setMode("dataflow")}>
-                  Pull Data
-                </Button>
-                <Button variant="secondary" onClick={() => setMode("chat")}>
-                  Talk About Your Data
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Dataflow */}
         {mode === "dataflow" && (
@@ -427,7 +410,7 @@ const Chat = () => {
           </div>
         )}
 
-        {/* Chat (default) */}
+        {/* Chat */}
         {mode === "chat" && (
           <>
             <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
@@ -498,7 +481,18 @@ const Chat = () => {
       </div>
 
       {/* Progress Modal */}
-      <Dialog open={progressModalOpen} onOpenChange={setProgressModalOpen}>
+      <Dialog
+        open={progressModalOpen}
+        onOpenChange={(open) => {
+          setProgressModalOpen(open);
+          if (!open && processingDone) {
+            setApiKeys([""]);
+            setProgressLogs([]);
+            setIsProcessing(false);
+            setProcessingDone(false);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Processing Your Data</DialogTitle>
@@ -527,7 +521,11 @@ const Chat = () => {
               <Button
                 onClick={() => {
                   setProgressModalOpen(false);
-                  setMode("dataflow"); // navigate back to Enter API Key page
+                  setMode("dataflow");
+                  setApiKeys([""]);
+                  setProgressLogs([]);
+                  setIsProcessing(false);
+                  setProcessingDone(false);
                 }}
               >
                 OK
