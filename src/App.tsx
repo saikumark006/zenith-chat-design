@@ -34,15 +34,10 @@ const App = () => (
           {/* Public login */}
           <Route path="/login" element={<Login />} />
 
+          {/* Public agents page */}
+          <Route path="/agents" element={<Agents />} />
+
           {/* Protected routes */}
-          <Route
-            path="/agents"
-            element={
-              <ProtectedRoute>
-                <Agents />
-              </ProtectedRoute>
-            }
-          />
           <Route
             path="/chat"
             element={

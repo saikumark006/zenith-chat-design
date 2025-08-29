@@ -85,8 +85,16 @@ const Chat = () => {
     };
   }, [location.state]);
 
-  // User name from login (store this at login time: localStorage.setItem("user_name", "<Name>"))
-  const userName = useMemo(() => (localStorage.getItem("user_name") || "").trim() || "there", []);
+  // User name from login - extract first name before @ for emails
+  const userName = useMemo(() => {
+    const fullName = (localStorage.getItem("user_name") || "").trim();
+    if (!fullName) return "there";
+    // Extract first name (before @ for emails, or first word)
+    const firstName = fullName.includes("@") 
+      ? fullName.split("@")[0] 
+      : fullName.split(" ")[0];
+    return firstName || "there";
+  }, []);
 
   // Bot-type checks
   const isDataFlow = /data\s*flow/i.test(selectedAgent.name || "");
@@ -94,7 +102,7 @@ const Chat = () => {
 
   // Personalized greeting
   const greeting = useMemo(() => {
-    if (isDataFlow) return `Hey ${userName}, let's pull your data with one click.`;
+    if (isDataFlow) return `Hey ${userName}, let's pull your data real quick.`;
     if (isInsights) return `Hey ${userName}, let's get insights on your data.`;
     return `Hey ${userName}, how can I help today?`;
   }, [isDataFlow, isInsights, userName]);
@@ -237,19 +245,17 @@ const Chat = () => {
 
   const handleLogout = () => {
     try {
-      // Clear anything auth-ish / cached
-      localStorage.removeItem("selectedAgent");
+      // Clear auth token but keep agent selection
       localStorage.removeItem("auth_token");
       localStorage.removeItem("pref_show_timestamps");
       localStorage.removeItem("pref_compact_mode");
-      // keep user_name if you want to greet after re-login; remove if not needed:
-      // localStorage.removeItem("user_name");
+      localStorage.removeItem("user_name");
       sessionStorage.clear();
 
-      // Navigate to agents page
-      navigate("/agents");
+      // Navigate back to login page for the current agent
+      navigate("/login", { state: { agent: selectedAgent } });
     } catch {
-      navigate("/agents");
+      navigate("/login");
     }
   };
 
