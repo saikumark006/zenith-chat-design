@@ -17,6 +17,8 @@ import {
   Minus,
   Upload,
   LogOut,
+  ArrowRight,
+  ArrowDown,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -179,6 +181,10 @@ const Chat = () => {
   /* ---------- DataFlow onboarding state ---------- */
   const [apiKeys, setApiKeys] = useState<string[]>([""]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [conversationType, setConversationType] = useState<'pull' | 'converse' | null>(
+    isDataFlow ? 'pull' : null
+  );
+  const [showDataFlowModal, setShowDataFlowModal] = useState(false);
 
   const handleApiKeyChange = (idx: number, value: string) => {
     setApiKeys((prev) => {
@@ -223,6 +229,48 @@ const Chat = () => {
       return next;
     });
     e.target.value = "";
+  };
+
+  const handlePullData = async () => {
+    console.log("API Keys:", apiKeys.filter(k => k.trim()));
+    
+    try {
+      // Call Supabase Edge Function to run Python script
+      const response = await fetch('/functions/v1/pull-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          apiKeys: apiKeys.filter(k => k.trim()),
+          files: []
+        }),
+      });
+      
+      if (response.ok) {
+        setConversationType('converse');
+        setMessages([
+          {
+            id: "success-1",
+            content: '🎉 Data successfully pulled into Snowflake! Your data is now ready for analysis. What insights would you like to discover?',
+            isAI: true,
+            timestamp: new Date()
+          }
+        ]);
+      } else {
+        throw new Error('Failed to pull data');
+      }
+    } catch (error) {
+      console.error('Error pulling data:', error);
+      setMessages([
+        {
+          id: "error-1",
+          content: '❌ Sorry, there was an error pulling your data. Please check your API keys and try again.',
+          isAI: true,
+          timestamp: new Date()
+        }
+      ]);
+    }
   };
 
   /* ---------- Settings Modal State ---------- */
@@ -286,7 +334,22 @@ const Chat = () => {
             Back to Agents
           </Button>
 
-          <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10">
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10"
+            onClick={() => {
+              if (isDataFlow) {
+                setShowDataFlowModal(true);
+              } else {
+                setMessages([{
+                  id: "welcome-new",
+                  content: greeting,
+                  isAI: true,
+                  timestamp: new Date(),
+                }]);
+              }
+            }}
+          >
             <MessageCircle className="w-4 h-4" />
             New Conversation
           </Button>
@@ -336,7 +399,7 @@ const Chat = () => {
         </div>
 
         {/* Content */}
-        {isDataFlow ? (
+        {isDataFlow && conversationType === 'pull' ? (
           /* ---------- DataFlow: One-click Data Pull onboarding ---------- */
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="w-full max-w-xl">
@@ -409,7 +472,14 @@ const Chat = () => {
               />
 
               <div className="mt-6 flex justify-end">
-                <Button className="ai-neural-btn">Continue</Button>
+                <Button 
+                  className="ai-neural-btn"
+                  onClick={handlePullData}
+                  disabled={apiKeys.every(k => k.trim() === "")}
+                >
+                  <ArrowRight className="w-4 h-4 mr-2" />
+                  Continue
+                </Button>
               </div>
             </div>
           </div>
@@ -432,9 +502,11 @@ const Chat = () => {
                       }`}
                     >
                       <p className="text-sm text-foreground">{message.content}</p>
-                      {/* timestamps below are controlled by settings */}
-                      {/* Will apply to new messages; the first greeting already includes timestamp */}
-                      {/* You can also add compactMode here if desired */}
+                      {showTimestamps && (
+                        <div className="text-xs opacity-70 mt-2">
+                          {message.timestamp.toLocaleTimeString()}
+                        </div>
+                      )}
                     </Card>
 
                     {!message.isAI && (
@@ -489,6 +561,51 @@ const Chat = () => {
           </>
         )}
       </div>
+
+      {/* DataFlow Modal */}
+      <Dialog open={showDataFlowModal} onOpenChange={setShowDataFlowModal}>
+        <DialogContent className="max-w-md">
+          <div className="text-center space-y-6">
+            <div>
+              <h3 className="text-xl font-semibold mb-2">New Conversation</h3>
+              <p className="text-sm text-muted-foreground">What would you like to do?</p>
+            </div>
+            
+            <div className="space-y-3">
+              <Button
+                variant="default"
+                className="w-full h-16 flex-col gap-2"
+                onClick={() => {
+                  setConversationType('pull');
+                  setShowDataFlowModal(false);
+                  setMessages([]);
+                }}
+              >
+                <ArrowDown className="w-5 h-5" />
+                <span>Pull your data</span>
+              </Button>
+              
+              <Button
+                variant="outline"
+                className="w-full h-16 flex-col gap-2"
+                onClick={() => {
+                  setConversationType('converse');
+                  setShowDataFlowModal(false);
+                  setMessages([{
+                    id: "converse-welcome",
+                    content: `Hey ${userName}, let's analyze your data together. What would you like to know?`,
+                    isAI: true,
+                    timestamp: new Date(),
+                  }]);
+                }}
+              >
+                <MessageCircle className="w-5 h-5" />
+                <span>Converse about your data</span>
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Settings Modal */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
