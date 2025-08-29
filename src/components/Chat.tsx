@@ -17,12 +17,11 @@ import {
   Minus,
   Upload,
   LogOut,
-  ArrowRight,
-  ArrowDown,
+  Loader2,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-
-/* shadcn/ui modal + form bits */
 import {
   Dialog,
   DialogContent,
@@ -41,7 +40,6 @@ interface Message {
   isAI: boolean;
   timestamp: Date;
 }
-
 type IconKey = "Database" | "BarChart3";
 type Agent = {
   id: number;
@@ -54,18 +52,14 @@ type Agent = {
   avm: number;
   avgColor: string;
 };
-
 const ICON_MAP: Record<IconKey, React.ComponentType<{ className?: string }>> = {
   Database,
   BarChart3,
 };
-/* --------------------------- */
 
 const Chat = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Derive agent from state or cache
   const selectedAgent: Agent = useMemo(() => {
     const fromState = (location.state as { agent?: Agent } | null)?.agent;
     if (fromState) {
@@ -87,27 +81,9 @@ const Chat = () => {
     };
   }, [location.state]);
 
-  // User name from login - extract first name before @ for emails
-  const userName = useMemo(() => {
-    const fullName = (localStorage.getItem("user_name") || "").trim();
-    if (!fullName) return "there";
-    // Extract first name (before @ for emails, or first word)
-    const firstName = fullName.includes("@") 
-      ? fullName.split("@")[0] 
-      : fullName.split(" ")[0];
-    return firstName || "there";
-  }, []);
-
-  // Bot-type checks
+  const userName = useMemo(() => (localStorage.getItem("user_name") || "").trim() || "there", []);
   const isDataFlow = /data\s*flow/i.test(selectedAgent.name || "");
-  const isInsights = /insight/i.test(selectedAgent.name || "");
-
-  // Personalized greeting
-  const greeting = useMemo(() => {
-    if (isDataFlow) return `Hey ${userName}, let's pull your data real quick.`;
-    if (isInsights) return `Hey ${userName}, let's get insights on your data.`;
-    return `Hey ${userName}, how can I help today?`;
-  }, [isDataFlow, isInsights, userName]);
+  const greeting = useMemo(() => `Hey ${userName}, how can I help today?`, [userName]);
 
   const HeaderIcon = ICON_MAP[selectedAgent.iconKey] ?? Database;
   const headerTitle = selectedAgent.name || "AI Assistant";
@@ -115,42 +91,31 @@ const Chat = () => {
 
   /* ---------- Messages ---------- */
   const [messages, setMessages] = useState<Message[]>(() => [
-    {
-      id: "welcome-1",
-      content: greeting,
-      isAI: true,
-      timestamp: new Date(),
-    },
+    { id: "welcome-1", content: greeting, isAI: true, timestamp: new Date() },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   };
-
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
-
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputValue,
       isAI: false,
       timestamp: new Date(),
     };
-
     setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
     setIsTyping(true);
-
-    // Simulate AI response
     setTimeout(() => {
       const aiResponses = [
         "I understand your question. Let me think about this and provide you with a helpful response.",
@@ -158,14 +123,12 @@ const Chat = () => {
         "Thanks for your message. Based on what you've asked, here's my response to help you.",
         "I've analyzed your question and I'm ready to assist you with a comprehensive answer.",
       ];
-
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: aiResponses[Math.floor(Math.random() * aiResponses.length)],
         isAI: true,
         timestamp: new Date(),
       };
-
       setMessages((prev) => [...prev, aiMessage]);
       setIsTyping(false);
     }, 2000);
@@ -181,10 +144,6 @@ const Chat = () => {
   /* ---------- DataFlow onboarding state ---------- */
   const [apiKeys, setApiKeys] = useState<string[]>([""]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [conversationType, setConversationType] = useState<'pull' | 'converse' | null>(
-    isDataFlow ? 'pull' : null
-  );
-  const [showDataFlowModal, setShowDataFlowModal] = useState(false);
 
   const handleApiKeyChange = (idx: number, value: string) => {
     setApiKeys((prev) => {
@@ -193,27 +152,23 @@ const Chat = () => {
       return next;
     });
   };
-
   const addApiKeyField = () => {
     if (apiKeys[apiKeys.length - 1].trim() !== "") {
       setApiKeys((prev) => [...prev, ""]);
     }
   };
-
   const removeApiKeyField = (idx: number) => {
     setApiKeys((prev) => {
       const next = prev.filter((_, i) => i !== idx);
       return next.length === 0 ? [""] : next;
     });
   };
-
   const handleApiKeyEnter = (idx: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && idx === apiKeys.length - 1) {
       e.preventDefault();
       if (apiKeys[idx].trim() !== "") addApiKeyField();
     }
   };
-
   const handleCsvPicked: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -222,7 +177,6 @@ const Chat = () => {
       e.target.value = "";
       return;
     }
-    // Fill the current (last) API key field with the CSV filename
     setApiKeys((prev) => {
       const next = [...prev];
       next[prev.length - 1] = file.name;
@@ -231,52 +185,58 @@ const Chat = () => {
     e.target.value = "";
   };
 
-  const handlePullData = async () => {
-    console.log("API Keys:", apiKeys.filter(k => k.trim()));
-    
+  /** ---------- Modal for Progress ---------- */
+  const [progressModalOpen, setProgressModalOpen] = useState(false);
+  const [progressLogs, setProgressLogs] = useState<string[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processingDone, setProcessingDone] = useState(false);
+
+  const handleContinue = async () => {
     try {
-      // Call Supabase Edge Function to run Python script
-      const response = await fetch('/functions/v1/pull-data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          apiKeys: apiKeys.filter(k => k.trim()),
-          files: []
-        }),
-      });
-      
-      if (response.ok) {
-        setConversationType('converse');
-        setMessages([
-          {
-            id: "success-1",
-            content: '🎉 Data successfully pulled into Snowflake! Your data is now ready for analysis. What insights would you like to discover?',
-            isAI: true,
-            timestamp: new Date()
-          }
-        ]);
-      } else {
-        throw new Error('Failed to pull data');
+      const validApiKeys = apiKeys.filter((key) => key.trim() !== "");
+      if (validApiKeys.length === 0) {
+        alert("Please enter at least one valid URL");
+        return;
       }
-    } catch (error) {
-      console.error('Error pulling data:', error);
-      setMessages([
-        {
-          id: "error-1",
-          content: '❌ Sorry, there was an error pulling your data. Please check your API keys and try again.',
-          isAI: true,
-          timestamp: new Date()
-        }
-      ]);
+
+      setProgressModalOpen(true);
+      setIsProcessing(true);
+      setProcessingDone(false);
+      setProgressLogs(["Starting data load..."]);
+
+      const response = await fetch("http://127.0.0.1:8000/run-loader", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apis: validApiKeys }),
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      const data = await response.json();
+
+      const logs: string[] = [];
+      if (data.details && data.details.length > 0) {
+        logs.push(...data.details);
+      } else {
+        logs.push(data.message || "Processing complete.");
+      }
+
+      setProgressLogs(logs);
+      setIsProcessing(false);
+      setProcessingDone(true);
+    } catch (err: any) {
+      setProgressLogs((prev) => [...prev, `❌ Error: ${err.message}`]);
+      setIsProcessing(false);
+      setProcessingDone(true);
     }
   };
 
-  /* ---------- Settings Modal State ---------- */
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  /* ---------- Mode ---------- */
+  const [mode, setMode] = useState<"landing" | "dataflow" | "chat">(
+    isDataFlow ? "landing" : "chat"
+  );
 
-  // Example preferences
+  /* ---------- Settings ---------- */
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [showTimestamps, setShowTimestamps] = useState<boolean>(() => {
     const v = localStorage.getItem("pref_show_timestamps");
     return v ? v === "true" : true;
@@ -285,31 +245,26 @@ const Chat = () => {
     const v = localStorage.getItem("pref_compact_mode");
     return v ? v === "true" : false;
   });
-
   const persistPrefs = () => {
     localStorage.setItem("pref_show_timestamps", String(showTimestamps));
     localStorage.setItem("pref_compact_mode", String(compactMode));
   };
-
   const handleLogout = () => {
     try {
-      // Clear auth token but keep agent selection
+      localStorage.removeItem("selectedAgent");
       localStorage.removeItem("auth_token");
       localStorage.removeItem("pref_show_timestamps");
       localStorage.removeItem("pref_compact_mode");
-      localStorage.removeItem("user_name");
       sessionStorage.clear();
-
-      // Navigate back to login page for the current agent
-      navigate("/login", { state: { agent: selectedAgent } });
+      navigate("/agents");
     } catch {
-      navigate("/login");
+      navigate("/agents");
     }
   };
 
   /* ---------- UI ---------- */
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-card flex">
       {/* Sidebar */}
       <div className="w-64 bg-card/80 backdrop-blur-xl border-r border-primary/20 flex flex-col">
         <div className="p-4 border-b border-primary/20">
@@ -323,7 +278,6 @@ const Chat = () => {
             </div>
           </div>
         </div>
-
         <div className="flex-1 p-4 space-y-4">
           <Button
             variant="ghost"
@@ -333,32 +287,27 @@ const Chat = () => {
             <ArrowLeft className="w-4 h-4" />
             Back to Agents
           </Button>
-
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10"
             onClick={() => {
-              if (isDataFlow) {
-                setShowDataFlowModal(true);
-              } else {
-                setMessages([{
-                  id: "welcome-new",
-                  content: greeting,
-                  isAI: true,
-                  timestamp: new Date(),
-                }]);
-              }
+              setMode(isDataFlow ? "landing" : "chat");
+              setMessages([{ id: "welcome-1", content: greeting, isAI: true, timestamp: new Date() }]);
+              setInputValue("");
+              setIsTyping(false);
+              setApiKeys([""]);
             }}
           >
             <MessageCircle className="w-4 h-4" />
             New Conversation
           </Button>
-
-          <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10"
+          >
             <History className="w-4 h-4" />
             Chat History
           </Button>
-
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-muted-foreground hover:text-primary hover:bg-primary/10"
@@ -368,8 +317,6 @@ const Chat = () => {
             Settings
           </Button>
         </div>
-
-        {/* Footer */}
         <div className="p-4 border-t border-primary/20">
           <div className="text-xs text-muted-foreground space-y-1">
             <div className="flex justify-between">
@@ -398,19 +345,31 @@ const Chat = () => {
           </div>
         </div>
 
-        {/* Content */}
-        {isDataFlow && conversationType === 'pull' ? (
-          /* ---------- DataFlow: One-click Data Pull onboarding ---------- */
+        {/* Landing (ONLY for DataFlow) */}
+        {isDataFlow && mode === "landing" && (
+          <div className="flex-1 flex items-center justify-center p-8">
+            <div className="w-full max-w-md text-center space-y-6">
+              <h2 className="text-2xl font-bold text-foreground">What would you like to do?</h2>
+              <div className="flex flex-col gap-4 mt-6">
+                <Button className="ai-neural-btn" onClick={() => setMode("dataflow")}>
+                  Pull Data
+                </Button>
+                <Button variant="secondary" onClick={() => setMode("chat")}>
+                  Talk About Your Data
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Dataflow */}
+        {mode === "dataflow" && (
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="w-full max-w-xl">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-foreground">One-click Data Pull</h2>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {greeting}
-                </p>
+                <p className="text-sm text-muted-foreground mt-2">{greeting}</p>
               </div>
-
-              {/* API Keys with inline CSV upload */}
               <div className="space-y-4">
                 {apiKeys.map((val, idx) => (
                   <div key={idx} className="relative">
@@ -418,10 +377,9 @@ const Chat = () => {
                       value={val}
                       onChange={(e) => handleApiKeyChange(idx, e.target.value)}
                       onKeyDown={(e) => handleApiKeyEnter(idx, e)}
-                      placeholder={`Enter API Key${apiKeys.length > 1 ? ` #${idx + 1}` : ""}`}
+                      placeholder={`Enter CSV/Parquet/API URL ${apiKeys.length > 1 ? `#${idx + 1}` : ""}`}
                       className="pr-36 bg-input/50 border-primary/20 focus:border-primary focus:ring-primary/20 ai-glow"
                     />
-                    {/* Right controls */}
                     <div className="absolute right-1 top-1/2 -translate-y-1/2 flex gap-1">
                       <Button
                         type="button"
@@ -430,17 +388,15 @@ const Chat = () => {
                         title="Upload CSV"
                         onClick={() => fileInputRef.current?.click()}
                       >
-                        <Upload className="w-4 h-4 mr-1" />
-                        CSV
+                        <Upload className="w-4 h-4 mr-1" /> CSV
                       </Button>
-
                       {apiKeys.length > 1 && (
                         <Button
                           type="button"
                           variant="secondary"
                           onClick={() => removeApiKeyField(idx)}
                           className="h-9 w-9"
-                          title="Remove this API key"
+                          title="Remove this field"
                         >
                           <Minus className="w-4 h-4" />
                         </Button>
@@ -461,30 +417,18 @@ const Chat = () => {
                   </div>
                 ))}
               </div>
-
-              {/* Hidden CSV input */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".csv"
-                onChange={handleCsvPicked}
-                className="hidden"
-              />
-
+              <input ref={fileInputRef} type="file" accept=".csv" onChange={handleCsvPicked} className="hidden" />
               <div className="mt-6 flex justify-end">
-                <Button 
-                  className="ai-neural-btn"
-                  onClick={handlePullData}
-                  disabled={apiKeys.every(k => k.trim() === "")}
-                >
-                  <ArrowRight className="w-4 h-4 mr-2" />
+                <Button className="ai-neural-btn" onClick={handleContinue}>
                   Continue
                 </Button>
               </div>
             </div>
           </div>
-        ) : (
-          /* ---------- Regular chat view ---------- */
+        )}
+
+        {/* Chat (default) */}
+        {mode === "chat" && (
           <>
             <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
               <div className="space-y-6 max-w-4xl mr-auto">
@@ -495,20 +439,13 @@ const Chat = () => {
                         <HeaderIcon className="w-4 h-4 text-white" />
                       </div>
                     )}
-
                     <Card
                       className={`max-w-md p-4 ${
                         message.isAI ? "message-ai bg-gradient-message" : "bg-muted/80 border-muted-foreground/20"
                       }`}
                     >
                       <p className="text-sm text-foreground">{message.content}</p>
-                      {showTimestamps && (
-                        <div className="text-xs opacity-70 mt-2">
-                          {message.timestamp.toLocaleTimeString()}
-                        </div>
-                      )}
                     </Card>
-
                     {!message.isAI && (
                       <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
                         <User className="w-4 h-4 text-muted-foreground" />
@@ -516,7 +453,6 @@ const Chat = () => {
                     )}
                   </div>
                 ))}
-
                 {isTyping && (
                   <div className="flex gap-4 justify-start">
                     <div className={`w-8 h-8 ${badgeColor} rounded-full flex items-center justify-center hologram flex-shrink-0`}>
@@ -536,7 +472,6 @@ const Chat = () => {
                 )}
               </div>
             </ScrollArea>
-
             <div className="border-t border-primary/20 bg-card/80 backdrop-blur-xl p-6">
               <div className="w-full max-w-6xl mx-auto flex gap-4">
                 <div className="flex-1 relative">
@@ -562,48 +497,43 @@ const Chat = () => {
         )}
       </div>
 
-      {/* DataFlow Modal */}
-      <Dialog open={showDataFlowModal} onOpenChange={setShowDataFlowModal}>
-        <DialogContent className="max-w-md">
-          <div className="text-center space-y-6">
-            <div>
-              <h3 className="text-xl font-semibold mb-2">New Conversation</h3>
-              <p className="text-sm text-muted-foreground">What would you like to do?</p>
-            </div>
-            
-            <div className="space-y-3">
-              <Button
-                variant="default"
-                className="w-full h-16 flex-col gap-2"
-                onClick={() => {
-                  setConversationType('pull');
-                  setShowDataFlowModal(false);
-                  setMessages([]);
-                }}
-              >
-                <ArrowDown className="w-5 h-5" />
-                <span>Pull your data</span>
-              </Button>
-              
-              <Button
-                variant="outline"
-                className="w-full h-16 flex-col gap-2"
-                onClick={() => {
-                  setConversationType('converse');
-                  setShowDataFlowModal(false);
-                  setMessages([{
-                    id: "converse-welcome",
-                    content: `Hey ${userName}, let's analyze your data together. What would you like to know?`,
-                    isAI: true,
-                    timestamp: new Date(),
-                  }]);
-                }}
-              >
-                <MessageCircle className="w-5 h-5" />
-                <span>Converse about your data</span>
-              </Button>
-            </div>
+      {/* Progress Modal */}
+      <Dialog open={progressModalOpen} onOpenChange={setProgressModalOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Processing Your Data</DialogTitle>
+            <DialogDescription>Real-time progress of loading data into Snowflake.</DialogDescription>
+          </DialogHeader>
+          <div className="max-h-64 overflow-y-auto mt-4 space-y-2">
+            {progressLogs.map((log, idx) => (
+              <div key={idx} className="flex items-start gap-2 text-sm">
+                {log.startsWith("❌") ? (
+                  <XCircle className="w-4 h-4 text-red-500 mt-0.5" />
+                ) : (
+                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                )}
+                <span className="text-foreground">{log}</span>
+              </div>
+            ))}
+            {isProcessing && (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Processing...
+              </div>
+            )}
           </div>
+          <DialogFooter>
+            {processingDone && (
+              <Button
+                onClick={() => {
+                  setProgressModalOpen(false);
+                  setMode("dataflow"); // navigate back to Enter API Key page
+                }}
+              >
+                OK
+              </Button>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -614,47 +544,30 @@ const Chat = () => {
             <DialogTitle>Settings</DialogTitle>
             <DialogDescription>Personalize your chat experience and manage your account.</DialogDescription>
           </DialogHeader>
-
           <div className="space-y-6 py-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="show-ts">Show timestamps</Label>
-              <Switch
-                id="show-ts"
-                checked={showTimestamps}
-                onCheckedChange={setShowTimestamps}
-              />
+              <Switch id="show-ts" checked={showTimestamps} onCheckedChange={setShowTimestamps} />
             </div>
-
             <div className="flex items-center justify-between">
               <Label htmlFor="compact-mode">Compact message cards</Label>
-              <Switch
-                id="compact-mode"
-                checked={compactMode}
-                onCheckedChange={setCompactMode}
-              />
+              <Switch id="compact-mode" checked={compactMode} onCheckedChange={setCompactMode} />
             </div>
-
             <div className="pt-2 border-t border-border/50">
               <p className="text-sm text-muted-foreground mb-3">
                 Logged in as <span className="text-foreground font-medium">{userName}</span>
               </p>
-              <Button
-                variant="destructive"
-                className="w-full flex items-center gap-2"
-                onClick={handleLogout}
-              >
+              <Button variant="destructive" className="w-full flex items-center gap-2" onClick={handleLogout}>
                 <LogOut className="w-4 h-4" />
                 Logout
               </Button>
             </div>
           </div>
-
           <DialogFooter>
             <div className="flex w-full justify-between">
               <Button
                 variant="secondary"
                 onClick={() => {
-                  // revert toggles visually by reloading from storage
                   setShowTimestamps(localStorage.getItem("pref_show_timestamps") !== "false");
                   setCompactMode(localStorage.getItem("pref_compact_mode") === "true");
                   setSettingsOpen(false);
