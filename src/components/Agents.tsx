@@ -1,72 +1,98 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Search, 
-  Database, 
-  BarChart3, 
-  Plus,
+import {
+  Search,
+  Database,
+  BarChart3,
   ChevronDown,
   MoreHorizontal,
   ArrowRight,
-  Phone,
-  MessageSquare,
-  Mail,
-  ArrowLeft
+  ArrowLeft,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+export type IconKey = "Database" | "BarChart3";
+
+export type Agent = {
+  id: number;
+  name: string;
+  description: string;
+  iconKey: IconKey;      // used to rehydrate the exact icon on Login/Chat
+  color: string;         // tailwind bg-* class for the circle
+  rating: number;
+  status: "Active" | "Inactive";
+  date: string;
+  avm: number;           // kept in type but not rendered
+  avgColor: string;      // kept in type but not rendered
+};
+
+const ICON_MAP = {
+  Database,
+  BarChart3,
+};
 
 const Agents = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const agents = [
+  const agents: Agent[] = [
     {
       id: 1,
       name: "DataFlow",
-      description: "Seamlessly connects and ingests data from multiple sources including databases, APIs, files, and cloud services.",
-      icon: Database,
+      description:
+        "Seamlessly connects and ingests data from multiple sources including databases, APIs, files, and cloud services.",
+      iconKey: "Database",
       color: "bg-emerald-500",
       rating: 9.2,
       status: "Active",
       date: "3/1/2024",
-      channels: ["Voice"],
       avm: 9.2,
-      avgColor: "bg-emerald-500"
+      avgColor: "bg-emerald-500",
     },
     {
       id: 2,
       name: "InsightAI",
-      description: "Transforms raw data into actionable insights through natural language queries, SQL generation, and dynamic visualizations.",
-      icon: BarChart3,
-      color: "bg-blue-500", 
+      description:
+        "Transforms raw data into actionable insights through natural language queries, SQL generation, and dynamic visualizations.",
+      iconKey: "BarChart3",
+      color: "bg-blue-500",
       rating: 8.8,
       status: "Active",
       date: "2/10/2024",
-      channels: ["Voice", "Chat", "Email"],
       avm: 8.8,
-      avgColor: "bg-blue-500"
-    }
+      avgColor: "bg-blue-500",
+    },
   ];
 
-  const handleAgentClick = () => {
-    navigate('/login');
+  // name-only search so "data" → DataFlow only
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return agents;
+    return agents.filter((a) => a.name.toLowerCase().includes(q));
+  }, [agents, searchQuery]);
+
+  const handleAgentClick = (agent: Agent) => {
+    // persist so refresh on /login or /chat keeps the same selection
+    localStorage.setItem("selectedAgent", JSON.stringify(agent));
+    navigate("/login", { state: { agent } });
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-6 relative">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <div>
               <h1 className="text-3xl font-bold text-foreground">Your AI Agents</h1>
-              <p className="text-muted-foreground">Create, customize, and manage your intelligent assistants all in one place</p>
+              <p className="text-muted-foreground">
+                Manage your intelligent assistants all in one place
+              </p>
             </div>
           </div>
           <Button variant="outline" size="icon">
@@ -74,18 +100,18 @@ const Agents = () => {
           </Button>
         </div>
 
-        {/* Search and Filters */}
+        {/* Search */}
         <div className="flex gap-4 items-center">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
-              placeholder="Search by name or purpose..."
+              placeholder="Search by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-muted/50"
             />
           </div>
-          
+
           <Button variant="outline" className="gap-2">
             Most Recent <ChevronDown className="w-4 h-4" />
           </Button>
@@ -94,73 +120,55 @@ const Agents = () => {
 
       {/* Agents Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Agent Cards */}
-        {agents.map((agent) => {
-          const IconComponent = agent.icon;
-          return (
-            <Card key={agent.id} className="hover:shadow-lg transition-shadow cursor-pointer group" onClick={handleAgentClick}>
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full ${agent.color} flex items-center justify-center`}>
-                      <IconComponent className="w-5 h-5 text-white" />
+        {filtered.length === 0 ? (
+          <div className="col-span-full text-sm text-muted-foreground">
+            No agents found for "{searchQuery}".
+          </div>
+        ) : (
+          filtered.map((agent) => {
+            const IconComponent = ICON_MAP[agent.iconKey];
+            return (
+              <Card
+                key={agent.id}
+                className="hover:shadow-lg transition-shadow cursor-pointer group"
+                onClick={() => handleAgentClick(agent)}
+              >
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full ${agent.color} flex items-center justify-center`}>
+                        <IconComponent className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg">{agent.name}</CardTitle>
+                      </div>
                     </div>
-                    <div>
-                      <CardTitle className="text-lg">{agent.name}</CardTitle>
-                    </div>
+                    <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                    <MoreHorizontal className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardHeader>
+                </CardHeader>
 
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {agent.description}
-                </p>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground leading-relaxed">{agent.description}</p>
 
-                {/* Channels */}
-                <div className="flex gap-2 flex-wrap">
-                  {agent.channels.map((channel) => (
-                    <div key={channel} className="flex items-center gap-1">
-                      {channel === "Voice" && <Phone className="w-3 h-3" />}
-                      {channel === "Chat" && <MessageSquare className="w-3 h-3" />}
-                      {channel === "Email" && <Mail className="w-3 h-3" />}
-                      <span className="text-xs text-muted-foreground">{channel}</span>
-                    </div>
-                  ))}
-                </div>
+                  {/* date */}
+                  <p className="text-xs text-muted-foreground">{agent.date}</p>
 
-                {/* AVM Score */}
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-medium">AVM</span>
-                    <span className="text-lg font-bold">{agent.avm}</span>
+                  {/* footer */}
+                  <div className="flex items-center justify-between pt-2 border-t border-border">
+                    <span className="inline-flex items-center rounded-full bg-muted px-3 py-1 text-xs">
+                      {agent.status}
+                    </span>
+                    <Button variant="ghost" size="sm" className="text-xs gap-1 group-hover:text-primary">
+                      View Details <ArrowRight className="w-3 h-3" />
+                    </Button>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-1">
-                    <div 
-                      className={`h-1 rounded-full ${agent.avgColor}`}
-                      style={{ width: `${(agent.avm / 10) * 100}%` }}
-                    />
-                  </div>
-                </div>
-
-                <p className="text-xs text-muted-foreground">{agent.date}</p>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-2 border-t border-border">
-                  <Badge variant={agent.status === "Active" ? "default" : "secondary"}>
-                    {agent.status}
-                  </Badge>
-                  <Button variant="ghost" size="sm" className="text-xs gap-1 group-hover:text-primary">
-                    View Details <ArrowRight className="w-3 h-3" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                </CardContent>
+              </Card>
+            );
+          })
+        )}
       </div>
     </div>
   );

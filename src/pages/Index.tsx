@@ -15,11 +15,9 @@ const Index = () => {
 
         {/* Hero Section */}
         <div className="space-y-6">
-          <h1 className="text-5xl font-bold text-foreground">
-            AI Space
-          </h1>
+          <h1 className="text-5xl font-bold text-foreground">AI Space</h1>
           <p className="text-xl text-muted-foreground">
-            Create, customize, and manage your intelligent AI agents all in one place
+            All your intelligent AI companions - in one place
           </p>
         </div>
 
