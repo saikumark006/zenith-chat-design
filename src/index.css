@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* AI-Personified Design System - Neural networks, holograms, electric energy */
+
+@layer base {
+  :root {
+    /* Clean Black & Grey AI Chatbot Theme */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 90%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --primary-glow: 0 0% 85%;
+
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 95%;
+    --secondary-glow: 0 0% 40%;
+
+    --accent: 0 0% 25%;
+    --accent-foreground: 0 0% 95%;
+    --accent-glow: 0 0% 50%;
+
+    --neural: 0 0% 70%;
+    --neural-glow: 0 0% 85%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+
+    --destructive: 0 84% 55%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 80%;
+
+    --radius: 0.75rem;
+
+    /* Clean design tokens */
+    --gradient-neural: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    --gradient-hologram: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)));
+    --gradient-ai-bg: radial-gradient(ellipse at center, hsl(var(--muted) / 0.3), transparent 70%);
+    --gradient-message: linear-gradient(135deg, hsl(var(--muted) / 0.8), hsl(var(--card)));
+    
+    --shadow-neural: 0 0 20px hsl(var(--primary) / 0.1);
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.2);
+    --shadow-hologram: 0 0 30px hsl(var(--accent) / 0.2);
+
+    --transition-ai: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    /* Dark mode uses the same AI theme - it's already dark and futuristic */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: var(--gradient-ai-bg), hsl(var(--background));
+  }
+}
+
+@layer components {
+  /* Immersive AI Brain Background */
+  .neural-bg {
+    @apply relative overflow-hidden;
+    background: 
+      radial-gradient(ellipse at center, hsl(var(--background)) 0%, hsl(var(--card) / 0.8) 100%),
+      linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted) / 0.1) 100%);
+  }
+
+  .neural-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      /* Neural pathways */
+      linear-gradient(45deg, transparent 0%, hsl(var(--primary) / 0.03) 1%, transparent 2%),
+      linear-gradient(-45deg, transparent 0%, hsl(var(--neural) / 0.02) 1%, transparent 2%),
+      linear-gradient(135deg, transparent 0%, hsl(var(--accent) / 0.02) 1%, transparent 2%),
+      /* Synaptic connections */
+      radial-gradient(circle at 15% 25%, hsl(var(--primary) / 0.08) 1px, transparent 2px),
+      radial-gradient(circle at 85% 75%, hsl(var(--neural) / 0.06) 1px, transparent 2px),
+      radial-gradient(circle at 45% 15%, hsl(var(--accent) / 0.05) 1px, transparent 2px),
+      radial-gradient(circle at 65% 85%, hsl(var(--primary) / 0.04) 1px, transparent 2px),
+      radial-gradient(circle at 25% 65%, hsl(var(--neural) / 0.07) 1px, transparent 2px);
+    background-size: 
+      400px 400px, 350px 350px, 450px 450px,
+      200px 200px, 180px 180px, 220px 220px, 160px 160px, 240px 240px;
+    background-position: 
+      0 0, 0 0, 0 0,
+      0 0, 100px 50px, 200px 100px, 50px 150px, 150px 200px;
+    opacity: 0.6;
+    pointer-events: none;
+    animation: neural-flow 20s linear infinite;
+  }
+
+  .neural-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      /* Data streams */
+      linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.1) 50%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, hsl(var(--neural) / 0.08) 50%, transparent 100%),
+      /* Neuron clusters */
+      radial-gradient(circle at 30% 40%, hsl(var(--primary) / 0.05) 0%, transparent 20%),
+      radial-gradient(circle at 70% 60%, hsl(var(--accent) / 0.04) 0%, transparent 25%),
+      radial-gradient(circle at 20% 80%, hsl(var(--neural) / 0.06) 0%, transparent 15%);
+    background-size: 100% 2px, 2px 100%, 300px 300px, 250px 250px, 200px 200px;
+    background-position: 0 20%, 30% 0, 0 0, 0 0, 0 0;
+    opacity: 0.3;
+    pointer-events: none;
+    animation: data-pulse 15s ease-in-out infinite;
+  }
+
+  /* Simple Clean Effects */
+  .hologram {
+    @apply relative;
+    background: var(--gradient-neural);
+    transition: var(--transition-ai);
+  }
+
+  .hologram:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* AI Glow Effects */
+  .ai-glow {
+    box-shadow: var(--shadow-neural);
+    transition: var(--transition-glow);
+  }
+
+  .ai-glow:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+  }
+
+  /* Clean AI Button Variants */
+  .ai-neural-btn {
+    @apply relative;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border: 1px solid hsl(var(--border));
+    transition: var(--transition-ai);
+  }
+
+  .ai-neural-btn:hover {
+    background: hsl(var(--primary) / 0.9);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .ai-hologram-btn {
+    @apply relative;
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--border));
+    transition: var(--transition-ai);
+  }
+
+  .ai-hologram-btn:hover {
+    background: hsl(var(--secondary) / 0.8);
+  }
+
+  .ai-pulse-btn {
+    @apply relative;
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    border: 1px solid hsl(var(--border));
+    transition: var(--transition-ai);
+  }
+
+  .ai-pulse-btn:hover {
+    background: hsl(var(--muted) / 0.8);
+  }
+
+  /* Message Bubbles */
+  .message-ai {
+    @apply relative overflow-hidden;
+    background: var(--gradient-message);
+    border: 1px solid hsl(var(--primary) / 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .message-ai::before {
+    content: '';
+    @apply absolute left-0 top-0 w-1 h-full;
+    background: var(--gradient-neural);
+    animation: ai-pulse 2s ease-in-out infinite;
+  }
+
+  /* Typing Indicator */
+  .typing-dots {
+    @apply flex space-x-1;
+  }
+
+  .typing-dot {
+    @apply w-2 h-2 rounded-full;
+    background: hsl(var(--primary));
+    animation: typing-bounce 1.4s ease-in-out infinite both;
+  }
+
+  .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+  .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+}
+
+@layer utilities {
+  /* Custom animations for AI feel */
+  @keyframes neural-float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(1deg); }
+  }
+
+  @keyframes hologram-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes hologram-scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes ai-pulse {
+    0%, 100% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.7; transform: scaleY(1.05); }
+  }
+
+  @keyframes typing-bounce {
+    0%, 80%, 100% { transform: scale(0.8) translateY(0); opacity: 0.5; }
+    40% { transform: scale(1) translateY(-8px); opacity: 1; }
+  }
+
+  @keyframes matrix-rain {
+    0% { transform: translateY(-100vh); opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+
+  @keyframes circuit-flow {
+    0% { stroke-dashoffset: 100%; }
+    100% { stroke-dashoffset: 0%; }
+  }
+
+  @keyframes data-stream {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes sketch-float {
+    0%, 100% { transform: translateX(0px) translateY(0px); }
+    25% { transform: translateX(2px) translateY(-1px); }
+    50% { transform: translateX(-1px) translateY(2px); }
+    75% { transform: translateX(1px) translateY(1px); }
+  }
+
+  @keyframes neural-flow {
+    0% { 
+      background-position: 
+        0 0, 0 0, 0 0,
+        0 0, 100px 50px, 200px 100px, 50px 150px, 150px 200px;
+    }
+    50% { 
+      background-position: 
+        200px 200px, -175px 175px, 225px -225px,
+        100px 100px, 200px 150px, 300px 200px, 150px 250px, 250px 300px;
+    }
+    100% { 
+      background-position: 
+        400px 400px, -350px 350px, 450px -450px,
+        200px 200px, 300px 250px, 400px 300px, 250px 350px, 350px 400px;
+    }
+  }
+
+  @keyframes data-pulse {
+    0%, 100% { 
+      opacity: 0.3;
+      background-size: 100% 2px, 2px 100%, 300px 300px, 250px 250px, 200px 200px;
+    }
+    25% {
+      opacity: 0.5;
+      background-size: 100% 3px, 3px 100%, 350px 350px, 300px 300px, 250px 250px;
+    }
+    50% { 
+      opacity: 0.4;
+      background-size: 100% 2px, 2px 100%, 300px 300px, 250px 250px, 200px 200px;
+    }
+    75% {
+      opacity: 0.6;
+      background-size: 100% 4px, 4px 100%, 400px 400px, 350px 350px, 300px 300px;
+    }
+  }
+}
