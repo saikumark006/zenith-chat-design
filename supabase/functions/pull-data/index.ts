@@ -12,36 +12,57 @@ serve(async (req) => {
   }
 
   try {
-    const { apiKeys, files } = await req.json()
-    
-    // Get Snowflake credentials from environment variables
-    const snowflakeUser = Deno.env.get('SNOWFLAKE_USER')
-    const snowflakePassword = Deno.env.get('SNOWFLAKE_PASSWORD')
-    const snowflakeAccount = Deno.env.get('SNOWFLAKE_ACCOUNT')
-    const snowflakeRole = Deno.env.get('SNOWFLAKE_ROLE')
-    const snowflakeWarehouse = Deno.env.get('SNOWFLAKE_WAREHOUSE')
-    
-    if (!snowflakeUser || !snowflakePassword || !snowflakeAccount) {
-      throw new Error('Missing Snowflake credentials in environment variables')
+    // Hardcoded Snowflake credentials
+    const snowflakeConfig = {
+      user: "KINGKONG",
+      password: "Constant127496",
+      account: "LHHLNLP-EPB47564",
+      role: "ACCOUNTADMIN",
+      warehouse: "COMPUTE_WH",
+      database: "HACKATHON",
+      schema: "RAW"
     }
 
-    // Here we would implement the Python script logic in TypeScript/JavaScript
-    // For now, we'll simulate the data pulling process
+    console.log('Starting data pulling process with Snowflake config:', { 
+      user: snowflakeConfig.user, 
+      account: snowflakeConfig.account, 
+      role: snowflakeConfig.role, 
+      warehouse: snowflakeConfig.warehouse 
+    })
+
+    // Column sanitizer function
+    const sanitizeColumn = (col: string): string => {
+      let sanitized = col.toString().trim().replace(/['"]/g, '')
+      sanitized = sanitized.replace(/[^A-Za-z0-9_$]/g, '_')
+      if (sanitized && !sanitized.match(/^[A-Za-z_]/)) {
+        sanitized = "COL_" + sanitized
+      }
+      if (!sanitized) {
+        sanitized = "UNNAMED_COL"
+      }
+      return sanitized.toUpperCase()
+    }
     
-    console.log('Processing API keys:', apiKeys)
-    console.log('Processing files:', files)
-    console.log('Snowflake config:', { snowflakeUser, snowflakeAccount, snowflakeRole, snowflakeWarehouse })
-    
-    // Simulate data sources from the Python script
-    const dataSources = {
+    // Blob file sources
+    const blobFiles = {
       "finance_entries.csv": "https://bridgehorndevrgtest.blob.core.windows.net/hackathon/finance_entries.csv",
       "loyalty_ledger.csv": "https://bridgehorndevrgtest.blob.core.windows.net/hackathon/loyalty_ledger.csv",
       "product_prices.parquet": "https://bridgehorndevrgtest.blob.core.windows.net/hackathon/product_prices.parquet",
       "products.parquet": "https://bridgehorndevrgtest.blob.core.windows.net/hackathon/products.parquet",
       "transaction_lines.csv": "https://bridgehorndevrgtest.blob.core.windows.net/hackathon/transaction_lines.csv",
-      "transactions.csv": "https://bridgehorndevrgtest.blob.core.windows.net/hackathon/transactions.csv",
-      "customers.csv": `https://my.api.mockaroo.com/customers.csv?key=${apiKeys[0] || 'c6c250d0'}`
+      "transactions.csv": "https://bridgehorndevrgtest.blob.core.windows.net/hackathon/transactions.csv"
     }
+
+    // API sources
+    const BASE_URL = "https://api-zl0z.onrender.com/api"
+    const apiEndpoints = {
+      "customer_addresses": `${BASE_URL}/customer_addresses`,
+      "dim_customers": `${BASE_URL}/dim_customers`,
+      "stores": `${BASE_URL}/stores`
+    }
+
+    // Merge all data sources
+    const dataSources = { ...blobFiles, ...apiEndpoints }
     
     // Process each data source
     const results = []
@@ -56,39 +77,58 @@ serve(async (req) => {
           throw new Error(`Failed to fetch ${name}: ${response.statusText}`)
         }
         
-        // For CSV files, we can process the text
+        let processedData;
+        let headers: string[] = [];
+
+        // Handle different data types
         if (name.endsWith('.csv')) {
           const csvText = await response.text()
-          const lines = csvText.split('\n')
-          const headers = lines[0]?.split(',') || []
-          
-          // Sanitize column names (simplified version of Python logic)
-          const sanitizedHeaders = headers.map(header => 
-            header.trim()
-              .replace(/[^A-Za-z0-9_$]/g, '_')
-              .replace(/^[^A-Za-z_]/, 'COL_$&')
-              .toUpperCase()
-          )
-          
-          console.log(`✅ Processed ${name}: ${lines.length - 1} rows, columns: ${sanitizedHeaders.join(', ')}`)
-          
-          results.push({
-            table: name.replace('.csv', '').replace('-', '_').toUpperCase(),
-            rows: lines.length - 1,
-            columns: sanitizedHeaders,
-            status: 'success'
-          })
+          const lines = csvText.split('\n').filter(line => line.trim())
+          headers = lines[0]?.split(',') || []
+          processedData = { rows: lines.length - 1, type: 'csv' }
         } else if (name.endsWith('.parquet')) {
-          // For parquet files, we'll simulate processing
-          console.log(`✅ Processed ${name} (parquet file)`)
-          
-          results.push({
-            table: name.replace('.parquet', '').replace('-', '_').toUpperCase(),
-            rows: 'unknown', // Would need parquet parser
-            columns: ['simulated_columns'],
-            status: 'success'
-          })
+          // Simulate parquet processing
+          processedData = { rows: 'unknown', type: 'parquet' }
+          headers = ['simulated_columns']
+        } else {
+          // API endpoint - JSON data
+          const jsonData = await response.json()
+          const dataArray = Array.isArray(jsonData) ? jsonData : [jsonData]
+          if (dataArray.length > 0) {
+            headers = Object.keys(dataArray[0])
+          }
+          processedData = { rows: dataArray.length, type: 'api' }
         }
+
+        // Sanitize column names using the function
+        const sanitizedHeaders = headers.map(header => sanitizeColumn(header))
+        
+        // Handle duplicate columns
+        const seenColumns: { [key: string]: number } = {}
+        const finalColumns = sanitizedHeaders.map(col => {
+          if (col in seenColumns) {
+            seenColumns[col] += 1
+            return `${col}_${seenColumns[col]}`
+          } else {
+            seenColumns[col] = 0
+            return col
+          }
+        })
+
+        const tableName = name.replace(/\.(csv|parquet)$/, '').replace(/-/g, '_').toUpperCase()
+        
+        console.log(`📝 Original columns: ${headers.join(', ')}`)
+        console.log(`📝 Sanitized columns for ${tableName}: ${finalColumns.join(', ')}`)
+        console.log(`✅ Processed ${name}: ${processedData.rows} rows`)
+        
+        results.push({
+          table: tableName,
+          rows: processedData.rows,
+          columns: finalColumns,
+          originalColumns: headers,
+          status: 'success',
+          type: processedData.type
+        })
         
       } catch (error) {
         console.error(`❌ Failed to process ${name}:`, error)
