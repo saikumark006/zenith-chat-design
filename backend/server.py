@@ -53,7 +53,7 @@ SF_ROLE = "ACCOUNTADMIN"
 SF_WAREHOUSE = "COMPUTE_WH"
 SF_DATABASE = "HACKATHON"
 SF_SCHEMA = "RAW"
-OPENAI_API_KEY = "sk-proj-********************************"
+OPENAI_API_KEY = "*********************************************"
 OPENAI_MODEL = "gpt-4.1"
 if PANDASAI_AVAILABLE and OPENAI_API_KEY and "****" not in OPENAI_API_KEY:
     llm = LiteLLM(model="gpt-4", api_key=OPENAI_API_KEY)
